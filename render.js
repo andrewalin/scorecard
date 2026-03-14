@@ -19,16 +19,21 @@ function renderSummary(summaryCopy, state) {
 function renderControls(refs, state, uiState) {
   const activeHole = getActiveHole(state);
   const isEditing = state.editIndex !== null;
+  const isPickingScore = uiState.isScorecardOpen && !isEditing;
 
   refs.holeValue.textContent = String(activeHole.hole);
   refs.strokesValue.textContent = String(state.draftStrokes);
-  refs.modeCopy.textContent = isEditing ? `Edit mode: play ${state.editIndex + 1}` : "New score";
+  refs.modeCopy.textContent = isEditing
+    ? `Edit mode: play ${state.editIndex + 1}`
+    : isPickingScore
+      ? "Select a score to edit"
+      : "New score";
+  refs.toggleScorecardButton.hidden = isEditing;
   refs.exitEditButton.hidden = !isEditing;
   refs.submitWrap.hidden = isEditing;
   refs.submitLabel.textContent = "Slide to submit score";
-  refs.summaryPanel.hidden = !uiState.isScorecardOpen;
   refs.toggleScorecardButton.setAttribute("aria-expanded", String(uiState.isScorecardOpen));
-  refs.toggleScorecardButton.textContent = uiState.isScorecardOpen ? "Hide" : "Edit";
+  refs.toggleScorecardButton.textContent = uiState.isScorecardOpen ? "Cancel" : "Edit";
 
   document
     .querySelectorAll('[data-action^="hole-"]')
@@ -87,11 +92,12 @@ function renderScoreBreakdown(refs, state) {
   refs.scoreBreakdownLegend.replaceChildren(legendFragment);
 }
 
-function renderLiveScorecard(refs, state) {
+function renderLiveScorecard(refs, state, uiState) {
   const activeHole = getActiveHole(state);
   const totalSlots = Math.max(state.entries.length + 1, 1);
   const sections = Math.max(1, Math.ceil(totalSlots / HOLES_PER_SECTION));
   const fragment = document.createDocumentFragment();
+  const isPickingScore = uiState.isScorecardOpen && state.editIndex === null;
 
   for (let sectionIndex = 0; sectionIndex < sections; sectionIndex += 1) {
     const holeRow = document.createElement("tr");
@@ -119,6 +125,13 @@ function renderLiveScorecard(refs, state) {
       holeCell.textContent = entry ? entry.label : slotIndex === state.entries.length ? activeHole.label : "";
       strokesCell.textContent = entry ? String(entry.strokes) : "";
 
+      if (entry && isPickingScore) {
+        holeCell.dataset.liveEditIndex = String(slotIndex);
+        strokesCell.dataset.liveEditIndex = String(slotIndex);
+        holeCell.classList.add("is-selectable");
+        strokesCell.classList.add("is-selectable");
+      }
+
       if (slotIndex === state.entries.length) {
         holeCell.classList.add("is-current");
         strokesCell.classList.add("is-current");
@@ -139,43 +152,9 @@ function renderLiveScorecard(refs, state) {
   refs.liveScorecardTable.replaceChildren(fragment);
 }
 
-function renderScorecardList(refs, state) {
-  refs.scorecardList.replaceChildren(
-    ...state.entries.map((entry, index) => {
-      const item = document.createElement("li");
-      item.className = "scorecard-item";
-
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = `scorecard-button${index === state.editIndex ? " is-selected" : ""}`;
-      button.dataset.editIndex = String(index);
-
-      const left = document.createElement("div");
-      const holeLabel = document.createElement("div");
-      const metaLabel = document.createElement("div");
-      const strokesLabel = document.createElement("div");
-
-      holeLabel.className = "scorecard-hole";
-      holeLabel.textContent = `Hole ${entry.label}`;
-
-      metaLabel.className = "scorecard-meta";
-      metaLabel.textContent = `Play ${index + 1}`;
-
-      strokesLabel.className = "scorecard-strokes";
-      strokesLabel.textContent = `${entry.strokes} stroke${entry.strokes === 1 ? "" : "s"}`;
-
-      left.append(holeLabel, metaLabel);
-      button.append(left, strokesLabel);
-      item.append(button);
-      return item;
-    }),
-  );
-}
-
 export function render(refs, state, uiState) {
   renderSummary(refs.summaryCopy, state);
   renderControls(refs, state, uiState);
   renderScoreBreakdown(refs, state);
-  renderLiveScorecard(refs, state);
-  renderScorecardList(refs, state);
+  renderLiveScorecard(refs, state, uiState);
 }

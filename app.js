@@ -18,11 +18,9 @@ import { render } from "./render.js";
 const refs = {
   holeValue: document.querySelector("#hole-value"),
   strokesValue: document.querySelector("#strokes-value"),
-  scorecardList: document.querySelector("#scorecard-list"),
   summaryCopy: document.querySelector("#summary-copy"),
   submitSlider: document.querySelector("#submit-slider"),
   submitWrap: document.querySelector(".submit-wrap"),
-  summaryPanel: document.querySelector("#summary-panel"),
   modeCopy: document.querySelector("#mode-copy"),
   toggleScorecardButton: document.querySelector("#toggle-scorecard"),
   exitEditButton: document.querySelector("#exit-edit"),
@@ -136,7 +134,7 @@ function startEditing(index) {
     return;
   }
 
-  uiState.isScorecardOpen = true;
+  uiState.isScorecardOpen = false;
   clearResetHoleConfirm();
   state.editIndex = index;
   state.draftStrokes = entry.strokes;
@@ -155,7 +153,7 @@ function exitEditMode() {
 }
 
 function toggleScorecard() {
-  if (uiState.isScorecardOpen && state.editIndex !== null) {
+  if (state.editIndex !== null) {
     exitEditMode();
     return;
   }
@@ -241,13 +239,17 @@ writeState(window.location.pathname, window.history, state);
 render(refs, state, uiState);
 
 document.addEventListener("click", (event) => {
-  const button = event.target.closest("button");
-  if (!button) {
+  const liveScorecardCell = event.target.closest("[data-live-edit-index]");
+  if (liveScorecardCell) {
+    const index = Number(liveScorecardCell.dataset.liveEditIndex);
+    if (uiState.isScorecardOpen && Number.isInteger(index)) {
+      startEditing(index);
+    }
     return;
   }
 
-  if (button.dataset.editIndex !== undefined) {
-    startEditing(Number(button.dataset.editIndex));
+  const button = event.target.closest("button");
+  if (!button) {
     return;
   }
 

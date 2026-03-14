@@ -368,6 +368,19 @@ h1 {
   white-space: nowrap;
 }
 
+.live-scorecard-hole-cell.is-selectable,
+.live-scorecard-strokes-cell.is-selectable {
+  cursor: pointer;
+}
+
+.live-scorecard-hole-cell.is-selectable:hover,
+.live-scorecard-hole-cell.is-selectable:focus-visible,
+.live-scorecard-strokes-cell.is-selectable:hover,
+.live-scorecard-strokes-cell.is-selectable:focus-visible {
+  border-color: rgba(47, 107, 59, 0.28);
+  background: rgba(227, 239, 220, 0.82);
+}
+
 .live-scorecard-strokes-cell {
   min-height: 2.4rem;
   color: var(--accent-dark);
@@ -404,74 +417,10 @@ h1 {
   box-shadow: 0 10px 24px rgba(33, 76, 42, 0.3);
 }
 
-.summary {
-  padding: 1rem;
-}
-
-.summary[hidden] {
-  display: none;
-}
-
-.summary-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
 .summary-copy {
   color: var(--muted);
   font-size: 0.95rem;
   text-align: right;
-}
-
-.scorecard-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 0.65rem;
-}
-
-.scorecard-item {
-  list-style: none;
-}
-
-.scorecard-button {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 0.9rem 1rem;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.56);
-  border: 1px solid var(--line);
-  cursor: pointer;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-}
-
-.scorecard-button.is-selected {
-  background: rgba(47, 107, 59, 0.12);
-  border-color: rgba(47, 107, 59, 0.35);
-}
-
-.scorecard-hole {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.scorecard-meta {
-  color: var(--muted);
-  font-size: 0.9rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.scorecard-strokes {
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
 }
 
 @media (min-width: 641px) {
