@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Golf Scorecard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel hero">
+        <h1>Golf Scorecard</h1>
+      </section>
+
+      <section class="panel controls" aria-label="Selected hole editor">
+        <div class="mode-banner">
+          <p id="mode-copy" class="mode-copy">New score</p>
+          <div class="mode-actions">
+            <button
+              type="button"
+              id="toggle-scorecard"
+              class="ghost-button"
+              aria-expanded="false"
+              aria-controls="summary-panel"
+            >
+              Edit
+            </button>
+            <button type="button" id="exit-edit" class="ghost-button" hidden>Done editing</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <p class="label">Hole</p>
+          <div class="stepper">
+            <button type="button" class="stepper-button" data-action="hole-decrement" aria-label="Previous hole">-</button>
+            <output id="hole-value" class="value" aria-live="polite">1</output>
+            <button type="button" class="stepper-button" data-action="hole-increment" aria-label="Next hole number">+</button>
+          </div>
+          <div class="hole-label-wrap">
+            <button type="button" id="reset-hole" class="ghost-button hole-reset-button">
+              Set to 1
+            </button>
+            <button type="button" id="toggle-hole-label" class="ghost-button hole-label-toggle">
+              Custom label
+            </button>
+            <input
+              id="hole-label-input"
+              class="hole-label-input"
+              type="text"
+              inputmode="text"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="15a"
+              aria-label="Optional hole label"
+              hidden
+            />
+          </div>
+        </div>
+
+        <div class="control-group">
+          <p class="label">Strokes</p>
+          <div class="stepper">
+            <button type="button" class="stepper-button" data-action="strokes-decrement" aria-label="Decrease strokes">-</button>
+            <output id="strokes-value" class="value" aria-live="polite">3</output>
+            <button type="button" class="stepper-button" data-action="strokes-increment" aria-label="Increase strokes">+</button>
+          </div>
+        </div>
+
+        <div class="submit-wrap">
+          <label class="submit-label" for="submit-slider">Slide to submit score</label>
+          <div class="submit-track">
+            <input
+              id="submit-slider"
+              class="submit-slider"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value="0"
+              aria-label="Slide to submit score"
+            />
+            <div class="submit-hint" aria-hidden="true">
+              <span>Slide all the way</span>
+              <span>Submit</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="score-breakdown" aria-label="Score distribution">
+          <div
+            id="score-breakdown-bar"
+            class="score-breakdown-bar"
+            role="img"
+            aria-label="No scores recorded yet"
+          ></div>
+          <div id="score-breakdown-legend" class="score-breakdown-legend"></div>
+        </section>
+
+        <section class="live-scorecard" aria-labelledby="live-scorecard-title">
+          <div class="live-scorecard-header">
+            <p id="live-scorecard-title" class="label">Live scorecard</p>
+            <p id="summary-copy" class="summary-copy">0 holes • 0 strokes • 0.00 avg</p>
+          </div>
+          <div class="live-scorecard-table-wrap">
+            <table id="live-scorecard-table" class="live-scorecard-table"></table>
+          </div>
+        </section>
+      </section>
+
+      <section id="summary-panel" class="panel summary" aria-labelledby="scorecard-title" hidden>
+        <div class="summary-header">
+          <h2 id="scorecard-title">Scorecard</h2>
+        </div>
+        <ol id="scorecard-list" class="scorecard-list"></ol>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
