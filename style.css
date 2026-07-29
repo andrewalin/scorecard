@@ -240,6 +240,17 @@ h1 {
   transform: translateY(1px) scale(0.99);
 }
 
+.hole-stepper .stepper-button {
+  border: 1px solid rgba(47, 107, 59, 0.24);
+  color: var(--accent-dark);
+  background: rgba(255, 250, 240, 0.82);
+}
+
+.hole-stepper .stepper-button:hover,
+.hole-stepper .stepper-button:focus-visible {
+  background: rgba(227, 239, 220, 0.82);
+}
+
 .value {
   display: grid;
   place-items: center;
@@ -251,6 +262,17 @@ h1 {
   font-size: clamp(1.8rem, 8vw, 2.8rem);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+
+.hole-value {
+  color: var(--accent-dark);
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+}
+
+.strokes-value {
+  border-color: color-mix(in srgb, var(--score-color, var(--accent)) 62%, black);
+  background: color-mix(in srgb, var(--score-color, var(--accent)) 26%, white);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--score-color, var(--accent)) 22%, transparent);
 }
 
 .submit-wrap {
@@ -417,6 +439,12 @@ h1 {
   white-space: nowrap;
 }
 
+.live-scorecard-hole-cell {
+  color: var(--muted);
+  background: rgba(255, 252, 245, 0.72);
+  font-size: 0.86rem;
+}
+
 .live-scorecard-hole-cell.is-selectable,
 .live-scorecard-strokes-cell.is-selectable {
   cursor: pointer;
@@ -430,9 +458,21 @@ h1 {
   background: rgba(227, 239, 220, 0.82);
 }
 
+.live-scorecard-strokes-cell.has-score.is-selectable:hover,
+.live-scorecard-strokes-cell.has-score.is-selectable:focus-visible {
+  border-color: color-mix(in srgb, var(--score-color, var(--accent)) 70%, black);
+  background: color-mix(in srgb, var(--score-color, var(--accent)) 34%, white);
+}
+
 .live-scorecard-strokes-cell {
   min-height: 2.4rem;
   color: var(--accent-dark);
+}
+
+.live-scorecard-strokes-cell.has-score {
+  border-color: color-mix(in srgb, var(--score-color, var(--accent)) 52%, white);
+  background: color-mix(in srgb, var(--score-color, var(--accent)) 22%, white);
+  color: #1f2419;
 }
 
 .live-scorecard-hole-cell.is-current,

@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Golf Scorecard</title>
+    <title>Pocket Scorecard</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main class="app">
       <section class="panel hero">
-        <h1>Golf Scorecard</h1>
+        <h1>Pocket Scorecard</h1>
       </section>
 
       <section class="panel controls" aria-label="Selected hole editor">
@@ -28,9 +28,9 @@
 
         <div class="control-group">
           <p class="label">Hole</p>
-          <div class="stepper">
+          <div class="stepper hole-stepper">
             <button type="button" class="stepper-button" data-action="hole-decrement" aria-label="Previous hole">-</button>
-            <output id="hole-value" class="value" aria-live="polite">1</output>
+            <output id="hole-value" class="value hole-value" aria-live="polite">1</output>
             <button type="button" class="stepper-button" data-action="hole-increment" aria-label="Next hole number">+</button>
           </div>
           <div class="hole-label-wrap">
@@ -56,9 +56,9 @@
 
         <div class="control-group">
           <p class="label">Strokes</p>
-          <div class="stepper">
+          <div class="stepper strokes-stepper">
             <button type="button" class="stepper-button" data-action="strokes-decrement" aria-label="Decrease strokes">-</button>
-            <output id="strokes-value" class="value" aria-live="polite">3</output>
+            <output id="strokes-value" class="value strokes-value" aria-live="polite">3</output>
             <button type="button" class="stepper-button" data-action="strokes-increment" aria-label="Increase strokes">+</button>
           </div>
         </div>

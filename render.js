@@ -6,6 +6,10 @@ import {
   isCustomRoundMode,
 } from "./state.js";
 
+function scoreColor(strokes, index = 0) {
+  return `hsl(${(strokes * 47) % 360} 45% ${56 - Math.min(index, 4) * 4}%)`;
+}
+
 function renderSummary(summaryCopy, state) {
   const totalTracked = state.entries.length;
   const totalStrokes = state.entries.reduce((sum, entry) => sum + entry.strokes, 0);
@@ -28,6 +32,7 @@ function renderControls(refs, state, uiState) {
   refs.holeValue.textContent = String(activeHole.hole);
   refs.strokesValue.textContent = String(state.draftStrokes);
   refs.holeValue.closest(".stepper").classList.toggle("is-readonly", !canPickHole);
+  refs.strokesValue.style.setProperty("--score-color", scoreColor(state.draftStrokes));
   refs.modeCopy.textContent = isEditing
     ? `Edit mode: play ${state.editIndex + 1}`
     : isPickingScore
@@ -86,7 +91,7 @@ function renderScoreBreakdown(refs, state) {
 
   for (const [index, [strokes, count]] of orderedScores.entries()) {
     const percent = (count / totalScores) * 100;
-    const color = `hsl(${(strokes * 47) % 360} 45% ${56 - Math.min(index, 4) * 4}%)`;
+    const color = scoreColor(strokes, index);
     const segment = document.createElement("span");
     const label = document.createElement("span");
 
@@ -141,6 +146,10 @@ function renderLiveScorecard(refs, state, uiState) {
       strokesCell.className = "live-scorecard-strokes-cell";
       holeCell.textContent = entry ? entry.label : slotIndex === state.entries.length ? activeHole.label : "";
       strokesCell.textContent = entry ? String(entry.strokes) : "";
+      if (entry) {
+        strokesCell.classList.add("has-score");
+        strokesCell.style.setProperty("--score-color", scoreColor(entry.strokes));
+      }
 
       if (entry && isPickingScore) {
         holeCell.dataset.liveEditIndex = String(slotIndex);
