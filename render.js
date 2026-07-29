@@ -6,8 +6,19 @@ import {
   isCustomRoundMode,
 } from "./state.js";
 
-function scoreColor(strokes, index = 0) {
-  return `hsl(${(strokes * 47) % 360} 45% ${56 - Math.min(index, 4) * 4}%)`;
+const SCORE_COLORS = new Map([
+  [1, "#b91c1c"],
+  [2, "#ef4444"],
+  [3, "#8a8f7a"],
+  [4, "#2563eb"],
+  [5, "#1f2937"],
+  [6, "#7c3aed"],
+  [7, "#b45309"],
+  [8, "#0f766e"],
+]);
+
+function scoreColor(strokes) {
+  return SCORE_COLORS.get(strokes) ?? "#475569";
 }
 
 function renderSummary(summaryCopy, state) {
@@ -84,9 +95,9 @@ function renderScoreBreakdown(refs, state) {
   const legendFragment = document.createDocumentFragment();
   const ariaParts = [];
 
-  for (const [index, [strokes, count]] of orderedScores.entries()) {
+  for (const [strokes, count] of orderedScores) {
     const percent = (count / totalScores) * 100;
-    const color = scoreColor(strokes, index);
+    const color = scoreColor(strokes);
     const segment = document.createElement("span");
     const label = document.createElement("span");
 

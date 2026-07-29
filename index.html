@@ -12,7 +12,7 @@
         <h1>Pocket Scorecard</h1>
       </section>
 
-      <section class="panel controls" aria-label="Selected hole editor">
+      <section class="panel round-panel" aria-label="Round setup">
         <fieldset class="round-mode-control" aria-label="Round mode">
           <legend class="label">Round mode</legend>
           <div class="round-mode-options">
@@ -51,7 +51,9 @@
             />
           </div>
         </div>
+      </section>
 
+      <section class="panel score-panel" aria-label="Score entry">
         <div class="control-group">
           <p class="label">Strokes</p>
           <div class="stepper strokes-stepper">
@@ -64,7 +66,9 @@
         <div class="submit-wrap">
           <button type="button" id="submit-score" class="submit-button">Submit 3</button>
         </div>
+      </section>
 
+      <section class="panel scorecard-panel" aria-label="Round status">
         <section class="score-breakdown" aria-label="Score distribution">
           <div
             id="score-breakdown-bar"

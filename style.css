@@ -76,7 +76,9 @@ h1 {
   line-height: 1.5;
 }
 
-.controls {
+.round-panel,
+.score-panel,
+.scorecard-panel {
   padding: 1rem;
   display: grid;
   gap: 1rem;
@@ -271,9 +273,9 @@ h1 {
 }
 
 .strokes-value {
-  border-color: color-mix(in srgb, var(--score-color, var(--accent)) 62%, black);
-  background: color-mix(in srgb, var(--score-color, var(--accent)) 26%, white);
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--score-color, var(--accent)) 22%, transparent);
+  border-color: color-mix(in srgb, var(--score-color, var(--accent)) 58%, black);
+  background: color-mix(in srgb, var(--score-color, var(--accent)) 20%, white);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--score-color, var(--accent)) 16%, transparent);
 }
 
 .submit-wrap {
@@ -349,7 +351,7 @@ h1 {
   gap: 0.3rem;
   padding: 0.22rem 0.5rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--segment-color, var(--accent)) 14%, white);
+  background: color-mix(in srgb, var(--segment-color, var(--accent)) 16%, white);
   color: var(--accent-dark);
   font-size: 0.76rem;
   font-weight: 700;
@@ -436,7 +438,7 @@ h1 {
 .live-scorecard-strokes-cell.has-score.is-selectable:hover,
 .live-scorecard-strokes-cell.has-score.is-selectable:focus-visible {
   border-color: color-mix(in srgb, var(--score-color, var(--accent)) 70%, black);
-  background: color-mix(in srgb, var(--score-color, var(--accent)) 34%, white);
+  background: color-mix(in srgb, var(--score-color, var(--accent)) 28%, white);
 }
 
 .live-scorecard-strokes-cell {
@@ -446,7 +448,7 @@ h1 {
 
 .live-scorecard-strokes-cell.has-score {
   border-color: color-mix(in srgb, var(--score-color, var(--accent)) 52%, white);
-  background: color-mix(in srgb, var(--score-color, var(--accent)) 22%, white);
+  background: color-mix(in srgb, var(--score-color, var(--accent)) 18%, white);
   color: #1f2419;
 }
 
@@ -493,7 +495,7 @@ h1 {
     padding: 1.25rem;
   }
 
-  .controls {
+  .score-panel {
     position: sticky;
     bottom: max(0.75rem, env(safe-area-inset-bottom));
     z-index: 2;
@@ -536,7 +538,9 @@ h1 {
     font-size: 0.95rem;
   }
 
-  .controls,
+  .round-panel,
+  .score-panel,
+  .scorecard-panel,
   .summary {
     padding: 0.85rem;
   }
