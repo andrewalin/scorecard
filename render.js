@@ -3,6 +3,7 @@ import {
   activeHoleHasCustomLabel,
   defaultHoleLabel,
   getActiveHole,
+  isCustomRoundMode,
 } from "./state.js";
 
 function renderSummary(summaryCopy, state) {
@@ -20,9 +21,13 @@ function renderControls(refs, state, uiState) {
   const activeHole = getActiveHole(state);
   const isEditing = state.editIndex !== null;
   const isPickingScore = uiState.isScorecardOpen && !isEditing;
+  const isCustomMode = isCustomRoundMode(state);
+  const canPickSimpleStartHole = !isCustomMode && state.entries.length === 0 && !isEditing;
+  const canPickHole = isCustomMode || canPickSimpleStartHole;
 
   refs.holeValue.textContent = String(activeHole.hole);
   refs.strokesValue.textContent = String(state.draftStrokes);
+  refs.holeValue.closest(".stepper").classList.toggle("is-readonly", !canPickHole);
   refs.modeCopy.textContent = isEditing
     ? `Edit mode: play ${state.editIndex + 1}`
     : isPickingScore
@@ -35,14 +40,26 @@ function renderControls(refs, state, uiState) {
   refs.toggleScorecardButton.setAttribute("aria-expanded", String(uiState.isScorecardOpen));
   refs.toggleScorecardButton.textContent = uiState.isScorecardOpen ? "Cancel" : "Edit";
 
+  for (const button of refs.roundModeButtons) {
+    const isSelected = button.dataset.roundMode === state.roundMode;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+  }
+
   document
     .querySelectorAll('[data-action^="hole-"]')
-    .forEach((button) => (button.disabled = isEditing));
+    .forEach((button) => {
+      button.hidden = !canPickHole;
+      button.disabled = isEditing || !canPickHole;
+    });
 
+  refs.resetHoleButton.hidden = !isCustomMode;
   refs.resetHoleButton.disabled = isEditing;
   refs.resetHoleButton.textContent = uiState.isResetHoleConfirming ? "Tap again for 1" : "Set to 1";
 
-  refs.holeLabelInput.hidden = !uiState.isHoleLabelEditorOpen && !activeHoleHasCustomLabel(state);
+  refs.toggleHoleLabelButton.hidden = !isCustomMode;
+  refs.holeLabelInput.hidden =
+    !isCustomMode || (!uiState.isHoleLabelEditorOpen && !activeHoleHasCustomLabel(state));
   refs.holeLabelInput.value = activeHole.label;
   refs.toggleHoleLabelButton.textContent =
     uiState.isHoleLabelEditorOpen || activeHoleHasCustomLabel(state) ? "Use number" : "Custom label";

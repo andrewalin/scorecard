@@ -4,6 +4,11 @@ export const MIN_VALUE = 1;
 export const SUBMIT_THRESHOLD = 95;
 export const HOLES_PER_SECTION = 9;
 export const RESET_HOLE_CONFIRM_MS = 2500;
+export const ROUND_MODES = {
+  SIMPLE_9: "9",
+  SIMPLE_18: "18",
+  CUSTOM: "c",
+};
 
 export function parsePositiveInteger(value) {
   if (!/^\d+$/.test(value ?? "")) {
@@ -82,6 +87,10 @@ export function setLiveHole(state, holeData) {
   state.liveHole = createHoleData(holeData.hole, holeData.label);
 }
 
+export function isCustomRoundMode(state) {
+  return state.roundMode === ROUND_MODES.CUSTOM;
+}
+
 export function syncEditedEntry(state, changes = {}) {
   const entry = getActiveEntry(state);
   if (!entry) {
@@ -99,6 +108,17 @@ export function syncEditedEntry(state, changes = {}) {
 }
 
 export function advanceLiveHole(state) {
+  const roundEnd = state.roundMode === ROUND_MODES.SIMPLE_9
+    ? 9
+    : state.roundMode === ROUND_MODES.SIMPLE_18
+      ? 18
+      : null;
+
+  if (roundEnd !== null && state.liveHole.hole === roundEnd) {
+    setLiveHole(state, createHoleData(DEFAULT_HOLE));
+    return;
+  }
+
   setLiveHole(state, createHoleData(state.liveHole.hole + 1));
 }
 
@@ -115,16 +135,21 @@ export function readState(search) {
     }
   }
 
-  const liveHoleNumber = parsePositiveInteger(params.get("h")) ?? DEFAULT_HOLE;
-  const liveHole =
-    parseHoleLabel(params.get("l"), liveHoleNumber) ?? createHoleData(liveHoleNumber);
   const draftStrokes = parsePositiveInteger(params.get("s")) ?? DEFAULT_STROKES;
+  const roundMode = Object.values(ROUND_MODES).includes(params.get("m"))
+    ? params.get("m")
+    : ROUND_MODES.SIMPLE_18;
+  const liveHoleNumber = parsePositiveInteger(params.get("h")) ?? DEFAULT_HOLE;
+  const liveHole = roundMode === ROUND_MODES.CUSTOM
+    ? parseHoleLabel(params.get("l"), liveHoleNumber) ?? createHoleData(liveHoleNumber)
+    : createHoleData(liveHoleNumber);
   const rawEditIndex = parsePositiveInteger(params.get("edit"));
   const editIndex =
     rawEditIndex !== null && rawEditIndex <= entries.length ? rawEditIndex - 1 : null;
 
   const state = {
     liveHole,
+    roundMode,
     draftStrokes: Math.max(draftStrokes, MIN_VALUE),
     entries,
     editIndex,
@@ -142,11 +167,12 @@ export function readState(search) {
 
 export function writeState(pathname, history, state) {
   const parts = [
+    `m=${state.roundMode}`,
     `h=${state.liveHole.hole}`,
     `s=${state.draftStrokes}`,
   ];
 
-  if (state.liveHole.label !== defaultHoleLabel(state.liveHole.hole)) {
+  if (isCustomRoundMode(state) && state.liveHole.label !== defaultHoleLabel(state.liveHole.hole)) {
     parts.push(`l=${state.liveHole.label}`);
   }
 

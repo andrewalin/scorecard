@@ -1,12 +1,14 @@
 import {
   DEFAULT_HOLE,
   RESET_HOLE_CONFIRM_MS,
+  ROUND_MODES,
   SUBMIT_THRESHOLD,
   activeHoleHasCustomLabel,
   advanceLiveHole,
   createHoleData,
   defaultHoleLabel,
   getActiveHole,
+  isCustomRoundMode,
   parseHoleLabel,
   readState,
   setLiveHole,
@@ -24,6 +26,7 @@ const refs = {
   modeCopy: document.querySelector("#mode-copy"),
   toggleScorecardButton: document.querySelector("#toggle-scorecard"),
   exitEditButton: document.querySelector("#exit-edit"),
+  roundModeButtons: document.querySelectorAll("[data-round-mode]"),
   resetHoleButton: document.querySelector("#reset-hole"),
   toggleHoleLabelButton: document.querySelector("#toggle-hole-label"),
   holeLabelInput: document.querySelector("#hole-label-input"),
@@ -74,6 +77,22 @@ function releaseSubmitLock() {
   resetSubmitSlider();
 }
 
+function getSimpleRoundEnd() {
+  if (state.roundMode === ROUND_MODES.SIMPLE_9) {
+    return 9;
+  }
+
+  if (state.roundMode === ROUND_MODES.SIMPLE_18) {
+    return 18;
+  }
+
+  return null;
+}
+
+function canPickSimpleStartHole() {
+  return !isCustomRoundMode(state) && state.entries.length === 0 && state.editIndex === null;
+}
+
 function submitScore() {
   clearResetHoleConfirm();
   const activeHole = getActiveHole(state);
@@ -94,8 +113,18 @@ function submitScore() {
 }
 
 function updateLiveHole(delta) {
+  if (!isCustomRoundMode(state) && !canPickSimpleStartHole()) {
+    return;
+  }
+
   clearResetHoleConfirm();
-  setLiveHole(state, createHoleData(Math.max(1, state.liveHole.hole + delta)));
+  const simpleRoundEnd = getSimpleRoundEnd();
+  if (simpleRoundEnd !== null) {
+    const nextHole = ((state.liveHole.hole - 1 + delta + simpleRoundEnd) % simpleRoundEnd) + 1;
+    setLiveHole(state, createHoleData(nextHole));
+  } else {
+    setLiveHole(state, createHoleData(Math.max(1, state.liveHole.hole + delta)));
+  }
   commitAndRender();
 }
 
@@ -163,7 +192,7 @@ function toggleScorecard() {
 }
 
 function handleResetHoleClick() {
-  if (state.editIndex !== null) {
+  if (state.editIndex !== null || !isCustomRoundMode(state)) {
     return;
   }
 
@@ -179,6 +208,10 @@ function handleResetHoleClick() {
 }
 
 function handleToggleHoleLabel() {
+  if (!isCustomRoundMode(state)) {
+    return;
+  }
+
   if (uiState.isHoleLabelEditorOpen || activeHoleHasCustomLabel(state)) {
     const activeHole = getActiveHole(state);
     const defaultLabel = defaultHoleLabel(activeHole.hole);
@@ -201,6 +234,10 @@ function handleToggleHoleLabel() {
 }
 
 function applyHoleLabelInput() {
+  if (!isCustomRoundMode(state)) {
+    return;
+  }
+
   const activeHole = getActiveHole(state);
   const parsed = parseHoleLabel(refs.holeLabelInput.value, activeHole.hole);
 
@@ -232,6 +269,20 @@ function handleSubmitSlider() {
   }
 
   submitScore();
+}
+
+function handleRoundModeChange(roundMode) {
+  if (!Object.values(ROUND_MODES).includes(roundMode) || state.roundMode === roundMode) {
+    return;
+  }
+
+  clearResetHoleConfirm();
+  state.roundMode = roundMode;
+  uiState.isHoleLabelEditorOpen = false;
+  if (!isCustomRoundMode(state)) {
+    setLiveHole(state, createHoleData(state.liveHole.hole));
+  }
+  commitAndRender();
 }
 
 const state = readState(window.location.search);
@@ -270,6 +321,11 @@ document.addEventListener("click", (event) => {
 
   if (button.id === "toggle-hole-label") {
     handleToggleHoleLabel();
+    return;
+  }
+
+  if (button.dataset.roundMode) {
+    handleRoundModeChange(button.dataset.roundMode);
     return;
   }
 

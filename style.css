@@ -120,6 +120,45 @@ h1 {
   gap: 0.5rem;
 }
 
+.round-mode-control {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.round-mode-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  padding: 0.22rem;
+  border: 1px solid rgba(47, 107, 59, 0.2);
+  border-radius: 18px;
+  background: rgba(47, 107, 59, 0.08);
+}
+
+.round-mode-button {
+  appearance: none;
+  min-width: 0;
+  min-height: 2.6rem;
+  padding: 0.55rem 0.4rem;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--accent-dark);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.round-mode-button.is-selected {
+  background: var(--panel-strong);
+  box-shadow: 0 1px 8px rgba(34, 49, 28, 0.12);
+}
+
 .hole-label-wrap {
   display: flex;
   align-items: center;
@@ -165,6 +204,10 @@ h1 {
   align-items: center;
 }
 
+.stepper.is-readonly {
+  grid-template-columns: 1fr;
+}
+
 .stepper-button {
   appearance: none;
   border: 0;
@@ -182,6 +225,10 @@ h1 {
   cursor: not-allowed;
   opacity: 0.45;
   filter: grayscale(0.1);
+}
+
+.stepper-button[hidden] {
+  display: none;
 }
 
 .stepper-button:hover,
