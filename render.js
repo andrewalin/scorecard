@@ -41,7 +41,8 @@ function renderControls(refs, state, uiState) {
   refs.toggleScorecardButton.hidden = isEditing;
   refs.exitEditButton.hidden = !isEditing;
   refs.submitWrap.hidden = isEditing;
-  refs.submitLabel.textContent = "Slide to submit score";
+  refs.submitButton.disabled = uiState.submitLocked;
+  refs.submitButton.textContent = uiState.submitLocked ? "Submitted" : `Submit ${state.draftStrokes}`;
   refs.toggleScorecardButton.setAttribute("aria-expanded", String(uiState.isScorecardOpen));
   refs.toggleScorecardButton.textContent = uiState.isScorecardOpen ? "Cancel" : "Edit";
 

@@ -2,7 +2,6 @@ import {
   DEFAULT_HOLE,
   RESET_HOLE_CONFIRM_MS,
   ROUND_MODES,
-  SUBMIT_THRESHOLD,
   activeHoleHasCustomLabel,
   advanceLiveHole,
   createHoleData,
@@ -21,7 +20,7 @@ const refs = {
   holeValue: document.querySelector("#hole-value"),
   strokesValue: document.querySelector("#strokes-value"),
   summaryCopy: document.querySelector("#summary-copy"),
-  submitSlider: document.querySelector("#submit-slider"),
+  submitButton: document.querySelector("#submit-score"),
   submitWrap: document.querySelector(".submit-wrap"),
   modeCopy: document.querySelector("#mode-copy"),
   toggleScorecardButton: document.querySelector("#toggle-scorecard"),
@@ -30,7 +29,6 @@ const refs = {
   resetHoleButton: document.querySelector("#reset-hole"),
   toggleHoleLabelButton: document.querySelector("#toggle-hole-label"),
   holeLabelInput: document.querySelector("#hole-label-input"),
-  submitLabel: document.querySelector(".submit-label"),
   scoreBreakdownBar: document.querySelector("#score-breakdown-bar"),
   scoreBreakdownLegend: document.querySelector("#score-breakdown-legend"),
   liveScorecardTable: document.querySelector("#live-scorecard-table"),
@@ -44,6 +42,7 @@ const uiState = {
 };
 
 let resetHoleConfirmTimer = null;
+let submitLockTimer = null;
 
 function commitAndRender() {
   writeState(window.location.pathname, window.history, state);
@@ -66,15 +65,6 @@ function startResetHoleConfirm() {
     resetHoleConfirmTimer = null;
     render(refs, state, uiState);
   }, RESET_HOLE_CONFIRM_MS);
-}
-
-function resetSubmitSlider() {
-  refs.submitSlider.value = "0";
-}
-
-function releaseSubmitLock() {
-  uiState.submitLocked = false;
-  resetSubmitSlider();
 }
 
 function getSimpleRoundEnd() {
@@ -108,8 +98,6 @@ function submitScore() {
   state.draftStrokes = 3;
   uiState.isHoleLabelEditorOpen = false;
   commitAndRender();
-  uiState.submitLocked = true;
-  resetSubmitSlider();
 }
 
 function updateLiveHole(delta) {
@@ -255,16 +243,31 @@ function applyHoleLabelInput() {
   commitAndRender();
 }
 
-function handleSubmitSlider() {
-  if (uiState.submitLocked || Number(refs.submitSlider.value) < SUBMIT_THRESHOLD) {
+function lockSubmitTemporarily() {
+  uiState.submitLocked = true;
+  refs.submitButton.disabled = true;
+
+  if (submitLockTimer !== null) {
+    window.clearTimeout(submitLockTimer);
+  }
+
+  submitLockTimer = window.setTimeout(() => {
+    uiState.submitLocked = false;
+    submitLockTimer = null;
+    render(refs, state, uiState);
+  }, 650);
+}
+
+function handleSubmitButton() {
+  if (uiState.submitLocked) {
     return;
   }
+
+  lockSubmitTemporarily();
 
   if (state.editIndex !== null) {
     syncEditedEntry(state);
     commitAndRender();
-    uiState.submitLocked = true;
-    resetSubmitSlider();
     return;
   }
 
@@ -333,7 +336,4 @@ document.addEventListener("click", (event) => {
 });
 
 refs.holeLabelInput.addEventListener("input", applyHoleLabelInput);
-refs.submitSlider.addEventListener("input", handleSubmitSlider);
-refs.submitSlider.addEventListener("change", releaseSubmitLock);
-refs.submitSlider.addEventListener("pointerup", releaseSubmitLock);
-refs.submitSlider.addEventListener("pointercancel", releaseSubmitLock);
+refs.submitButton.addEventListener("click", handleSubmitButton);

@@ -1,7 +1,6 @@
 export const DEFAULT_HOLE = 1;
 export const DEFAULT_STROKES = 3;
 export const MIN_VALUE = 1;
-export const SUBMIT_THRESHOLD = 95;
 export const HOLES_PER_SECTION = 9;
 export const RESET_HOLE_CONFIRM_MS = 2500;
 export const ROUND_MODES = {
