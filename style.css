@@ -321,6 +321,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .live-scorecard-table-wrap {
@@ -360,6 +361,7 @@ h1 {
 
 .live-scorecard-hole-cell,
 .live-scorecard-strokes-cell {
+  position: relative;
   padding: 0.65rem 0.25rem;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(47, 107, 59, 0.12);
@@ -394,7 +396,23 @@ h1 {
 
 .live-scorecard-hole-cell.is-editing,
 .live-scorecard-strokes-cell.is-editing {
-  box-shadow: inset 0 0 0 2px rgba(166, 96, 28, 0.4);
+  border-color: #9c7a00;
+  background: #ffe84a;
+  color: #1f2419;
+  box-shadow: inset 0 0 0 2px rgba(156, 122, 0, 0.5);
+}
+
+.live-scorecard-strokes-cell.is-editing {
+  padding-right: 1rem;
+}
+
+.live-scorecard-edit-icon {
+  position: absolute;
+  top: 0.12rem;
+  right: 0.18rem;
+  color: #6b5200;
+  font-size: 0.72rem;
+  line-height: 1;
 }
 
 .submit-slider::-webkit-slider-thumb {
@@ -420,7 +438,6 @@ h1 {
 .summary-copy {
   color: var(--muted);
   font-size: 0.95rem;
-  text-align: right;
 }
 
 @media (min-width: 641px) {
@@ -487,8 +504,16 @@ h1 {
     flex-direction: column;
   }
 
-  .mode-actions {
+  .mode-banner .mode-actions {
     width: 100%;
+  }
+
+  .live-scorecard-header {
+    align-items: flex-start;
+  }
+
+  .live-scorecard-header .mode-actions {
+    flex-shrink: 0;
   }
 
   .control-group {

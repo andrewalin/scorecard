@@ -140,6 +140,13 @@ function renderLiveScorecard(refs, state, uiState) {
       if (slotIndex === state.editIndex) {
         holeCell.classList.add("is-editing");
         strokesCell.classList.add("is-editing");
+        strokesCell.setAttribute("aria-label", `Editing ${entry.strokes} strokes on hole ${entry.label}`);
+
+        const editIcon = document.createElement("span");
+        editIcon.className = "live-scorecard-edit-icon";
+        editIcon.setAttribute("aria-hidden", "true");
+        editIcon.textContent = "✎";
+        strokesCell.append(editIcon);
       }
 
       holeRow.append(holeCell);

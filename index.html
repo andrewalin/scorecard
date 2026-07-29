@@ -15,18 +15,6 @@
       <section class="panel controls" aria-label="Selected hole editor">
         <div class="mode-banner">
           <p id="mode-copy" class="mode-copy">New score</p>
-          <div class="mode-actions">
-            <button
-              type="button"
-              id="toggle-scorecard"
-              class="ghost-button"
-              aria-expanded="false"
-              aria-controls="live-scorecard-table"
-            >
-              Edit
-            </button>
-            <button type="button" id="exit-edit" class="ghost-button" hidden>Done editing</button>
-          </div>
         </div>
 
         <div class="control-group">
@@ -98,8 +86,22 @@
 
         <section class="live-scorecard" aria-labelledby="live-scorecard-title">
           <div class="live-scorecard-header">
-            <p id="live-scorecard-title" class="label">Live scorecard</p>
-            <p id="summary-copy" class="summary-copy">0 holes • 0 strokes • 0.00 avg</p>
+            <div>
+              <p id="live-scorecard-title" class="label">Live scorecard</p>
+              <p id="summary-copy" class="summary-copy">0 holes • 0 strokes • 0.00 avg</p>
+            </div>
+            <div class="mode-actions">
+              <button
+                type="button"
+                id="toggle-scorecard"
+                class="ghost-button"
+                aria-expanded="false"
+                aria-controls="live-scorecard-table"
+              >
+                Edit
+              </button>
+              <button type="button" id="exit-edit" class="ghost-button" hidden>Done editing</button>
+            </div>
           </div>
           <div class="live-scorecard-table-wrap">
             <table id="live-scorecard-table" class="live-scorecard-table"></table>
