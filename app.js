@@ -22,7 +22,6 @@ const refs = {
   summaryCopy: document.querySelector("#summary-copy"),
   submitButton: document.querySelector("#submit-score"),
   submitWrap: document.querySelector(".submit-wrap"),
-  modeCopy: document.querySelector("#mode-copy"),
   toggleScorecardButton: document.querySelector("#toggle-scorecard"),
   exitEditButton: document.querySelector("#exit-edit"),
   roundModeButtons: document.querySelectorAll("[data-round-mode]"),

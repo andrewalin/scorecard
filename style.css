@@ -82,25 +82,10 @@ h1 {
   gap: 1rem;
 }
 
-.mode-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-}
-
 .mode-actions {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-}
-
-.mode-copy {
-  color: var(--accent);
-  font-size: 0.95rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 .ghost-button {
@@ -251,6 +236,18 @@ h1 {
   background: rgba(227, 239, 220, 0.82);
 }
 
+.hole-value-wrap {
+  min-height: 4.5rem;
+  padding: 0.45rem 1rem;
+  border-radius: 18px;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+}
+
 .value {
   display: grid;
   place-items: center;
@@ -265,6 +262,10 @@ h1 {
 }
 
 .hole-value {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--accent-dark);
   font-size: clamp(1.6rem, 6vw, 2.2rem);
 }
@@ -540,15 +541,6 @@ h1 {
     padding: 0.85rem;
   }
 
-  .mode-banner {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .mode-banner .mode-actions {
-    width: 100%;
-  }
-
   .live-scorecard-header {
     align-items: flex-start;
   }
@@ -567,6 +559,7 @@ h1 {
   }
 
   .stepper-button,
+  .hole-value-wrap,
   .value,
   .submit-button {
     min-height: 4rem;

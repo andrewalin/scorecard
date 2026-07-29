@@ -13,12 +13,8 @@
       </section>
 
       <section class="panel controls" aria-label="Selected hole editor">
-        <div class="mode-banner">
-          <p id="mode-copy" class="mode-copy">New score</p>
-        </div>
-
         <fieldset class="round-mode-control" aria-label="Round mode">
-          <legend class="label">Round</legend>
+          <legend class="label">Round mode</legend>
           <div class="round-mode-options">
             <button type="button" class="round-mode-button" data-round-mode="9">Simple 9</button>
             <button type="button" class="round-mode-button" data-round-mode="18">Simple 18</button>
@@ -27,10 +23,12 @@
         </fieldset>
 
         <div class="control-group">
-          <p class="label">Hole</p>
           <div class="stepper hole-stepper">
             <button type="button" class="stepper-button" data-action="hole-decrement" aria-label="Previous hole">-</button>
-            <output id="hole-value" class="value hole-value" aria-live="polite">1</output>
+            <div class="hole-value-wrap">
+              <span class="label">Hole</span>
+              <output id="hole-value" class="value hole-value" aria-live="polite">1</output>
+            </div>
             <button type="button" class="stepper-button" data-action="hole-increment" aria-label="Next hole number">+</button>
           </div>
           <div class="hole-label-wrap">

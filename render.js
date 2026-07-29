@@ -24,7 +24,6 @@ function renderSummary(summaryCopy, state) {
 function renderControls(refs, state, uiState) {
   const activeHole = getActiveHole(state);
   const isEditing = state.editIndex !== null;
-  const isPickingScore = uiState.isScorecardOpen && !isEditing;
   const isCustomMode = isCustomRoundMode(state);
   const canPickSimpleStartHole = !isCustomMode && state.entries.length === 0 && !isEditing;
   const canPickHole = isCustomMode || canPickSimpleStartHole;
@@ -33,11 +32,6 @@ function renderControls(refs, state, uiState) {
   refs.strokesValue.textContent = String(state.draftStrokes);
   refs.holeValue.closest(".stepper").classList.toggle("is-readonly", !canPickHole);
   refs.strokesValue.style.setProperty("--score-color", scoreColor(state.draftStrokes));
-  refs.modeCopy.textContent = isEditing
-    ? `Edit mode: play ${state.editIndex + 1}`
-    : isPickingScore
-      ? "Select a score to edit"
-      : "New score";
   refs.toggleScorecardButton.hidden = isEditing;
   refs.exitEditButton.hidden = !isEditing;
   refs.submitWrap.hidden = isEditing;
