@@ -47,7 +47,12 @@ function renderControls(refs, state, uiState) {
   refs.exitEditButton.hidden = !isEditing;
   refs.submitWrap.hidden = isEditing;
   refs.submitButton.disabled = uiState.submitLocked;
-  refs.submitButton.textContent = uiState.submitLocked ? "Submitted" : `Submit ${state.draftStrokes}`;
+  refs.submitButton.classList.toggle("is-confirming", uiState.isStartHoleConfirming);
+  refs.submitButton.textContent = uiState.submitLocked
+    ? "Submitted"
+    : uiState.isStartHoleConfirming
+      ? "Confirm hole 1"
+      : `Submit ${state.draftStrokes}`;
   refs.toggleScorecardButton.setAttribute("aria-expanded", String(uiState.isScorecardOpen));
   refs.toggleScorecardButton.textContent = uiState.isScorecardOpen ? "Cancel" : "Edit";
 

@@ -38,9 +38,11 @@ const uiState = {
   isScorecardOpen: false,
   isHoleLabelEditorOpen: false,
   isResetHoleConfirming: false,
+  isStartHoleConfirming: false,
 };
 
 let resetHoleConfirmTimer = null;
+let startHoleConfirmTimer = null;
 let submitLockTimer = null;
 
 function commitAndRender() {
@@ -56,12 +58,30 @@ function clearResetHoleConfirm() {
   }
 }
 
+function clearStartHoleConfirm() {
+  uiState.isStartHoleConfirming = false;
+  if (startHoleConfirmTimer !== null) {
+    window.clearTimeout(startHoleConfirmTimer);
+    startHoleConfirmTimer = null;
+  }
+}
+
 function startResetHoleConfirm() {
   clearResetHoleConfirm();
   uiState.isResetHoleConfirming = true;
   resetHoleConfirmTimer = window.setTimeout(() => {
     uiState.isResetHoleConfirming = false;
     resetHoleConfirmTimer = null;
+    render(refs, state, uiState);
+  }, RESET_HOLE_CONFIRM_MS);
+}
+
+function startStartHoleConfirm() {
+  clearStartHoleConfirm();
+  uiState.isStartHoleConfirming = true;
+  startHoleConfirmTimer = window.setTimeout(() => {
+    uiState.isStartHoleConfirming = false;
+    startHoleConfirmTimer = null;
     render(refs, state, uiState);
   }, RESET_HOLE_CONFIRM_MS);
 }
@@ -82,8 +102,20 @@ function canPickSimpleStartHole() {
   return !isCustomRoundMode(state) && state.entries.length === 0 && state.editIndex === null;
 }
 
+function shouldConfirmDefaultStartHole() {
+  const activeHole = getActiveHole(state);
+
+  return (
+    state.editIndex === null &&
+    state.entries.length === 0 &&
+    activeHole.hole === DEFAULT_HOLE &&
+    activeHole.label === defaultHoleLabel(DEFAULT_HOLE)
+  );
+}
+
 function submitScore() {
   clearResetHoleConfirm();
+  clearStartHoleConfirm();
   const activeHole = getActiveHole(state);
 
   state.entries.push({
@@ -105,6 +137,7 @@ function updateLiveHole(delta) {
   }
 
   clearResetHoleConfirm();
+  clearStartHoleConfirm();
   const simpleRoundEnd = getSimpleRoundEnd();
   if (simpleRoundEnd !== null) {
     const nextHole = ((state.liveHole.hole - 1 + delta + simpleRoundEnd) % simpleRoundEnd) + 1;
@@ -116,6 +149,7 @@ function updateLiveHole(delta) {
 }
 
 function updateDraftStrokes(delta) {
+  clearStartHoleConfirm();
   state.draftStrokes = Math.max(1, state.draftStrokes + delta);
   syncEditedEntry(state);
   commitAndRender();
@@ -152,6 +186,7 @@ function startEditing(index) {
 
   uiState.isScorecardOpen = false;
   clearResetHoleConfirm();
+  clearStartHoleConfirm();
   state.editIndex = index;
   state.draftStrokes = entry.strokes;
   uiState.isHoleLabelEditorOpen = entry.label !== defaultHoleLabel(entry.hole);
@@ -161,6 +196,7 @@ function startEditing(index) {
 function exitEditMode() {
   syncEditedEntry(state);
   clearResetHoleConfirm();
+  clearStartHoleConfirm();
   uiState.isScorecardOpen = false;
   state.editIndex = null;
   state.draftStrokes = 3;
@@ -199,6 +235,8 @@ function handleToggleHoleLabel() {
     return;
   }
 
+  clearStartHoleConfirm();
+
   if (uiState.isHoleLabelEditorOpen || activeHoleHasCustomLabel(state)) {
     const activeHole = getActiveHole(state);
     const defaultLabel = defaultHoleLabel(activeHole.hole);
@@ -225,6 +263,7 @@ function applyHoleLabelInput() {
     return;
   }
 
+  clearStartHoleConfirm();
   const activeHole = getActiveHole(state);
   const parsed = parseHoleLabel(refs.holeLabelInput.value, activeHole.hole);
 
@@ -262,14 +301,22 @@ function handleSubmitButton() {
     return;
   }
 
-  lockSubmitTemporarily();
-
   if (state.editIndex !== null) {
+    lockSubmitTemporarily();
     syncEditedEntry(state);
     commitAndRender();
     return;
   }
 
+  if (shouldConfirmDefaultStartHole() && !uiState.isStartHoleConfirming) {
+    clearResetHoleConfirm();
+    startStartHoleConfirm();
+    render(refs, state, uiState);
+    refs.submitButton.focus();
+    return;
+  }
+
+  lockSubmitTemporarily();
   submitScore();
 }
 
@@ -279,6 +326,7 @@ function handleRoundModeChange(roundMode) {
   }
 
   clearResetHoleConfirm();
+  clearStartHoleConfirm();
   state.roundMode = roundMode;
   uiState.isHoleLabelEditorOpen = false;
   if (!isCustomRoundMode(state)) {
