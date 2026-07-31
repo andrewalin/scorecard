@@ -25,10 +25,13 @@ function renderSummary(summaryCopy, state) {
   const totalTracked = state.entries.length;
   const totalStrokes = state.entries.reduce((sum, entry) => sum + entry.strokes, 0);
   const averageStrokes = totalTracked === 0 ? 0 : totalStrokes / totalTracked;
+  const parScore = totalStrokes - totalTracked * 3;
+  const runningScore = parScore === 0 ? "even" : `${parScore > 0 ? "+" : ""}${parScore}`;
 
   summaryCopy.textContent =
     `${totalTracked} hole${totalTracked === 1 ? "" : "s"} • ` +
     `${totalStrokes} stroke${totalStrokes === 1 ? "" : "s"} • ` +
+    `${runningScore} • ` +
     `${averageStrokes.toFixed(2)} avg`;
 }
 
@@ -105,17 +108,23 @@ function renderScoreBreakdown(refs, state) {
     const color = scoreColor(strokes);
     const segment = document.createElement("span");
     const label = document.createElement("span");
+    const strokeValue = document.createElement("span");
+    const countValue = document.createElement("span");
 
     segment.className = "score-breakdown-segment";
     segment.style.width = `${percent}%`;
     segment.style.setProperty("--segment-color", color);
-    segment.title = `${strokes} strokes: ${count}/${totalScores} (${Math.round(percent)}%)`;
+    segment.title = `${strokes} strokes: ${count}`;
 
     label.className = "score-breakdown-chip";
     label.style.setProperty("--segment-color", color);
-    label.textContent = `${strokes}: ${Math.round(percent)}%`;
+    strokeValue.className = "score-breakdown-strokes";
+    strokeValue.textContent = String(strokes);
+    countValue.className = "score-breakdown-count";
+    countValue.textContent = String(count);
+    label.append(strokeValue, countValue);
 
-    ariaParts.push(`${Math.round(percent)} percent ${strokes} strokes`);
+    ariaParts.push(`${count} ${strokes}-stroke score${count === 1 ? "" : "s"}`);
     barFragment.append(segment);
     legendFragment.append(label);
   }
